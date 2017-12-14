@@ -67,7 +67,7 @@ $num_rows = sqlsrv_num_rows($result);
 print "<table><caption> <h2> Cars ($num_rows) </h2> </caption>";
 print "<tr align = 'center'>";
 
-$row = sqlsrv_fetch_object($result);
+$row = sqlsrv_fetch_array($result);
 $num_fields = sqlsrv_num_fields($result);
 
 // Produce the column labels
