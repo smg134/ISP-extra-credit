@@ -62,7 +62,8 @@ $result = sqlsrv_query($conn, $query);
 // Get the number of rows in the result, as well as the first row
 //  and the number of fields in the rows
 $num_rows = sqlsrv_num_rows($result);
-//print "Number of rows = $num_rows <br />";
+if ($num_rows === false)
+   print "Error in retrieveing row count.";
 
 print "<table><caption> <h2> Cars ($num_rows) </h2> </caption>";
 print "<tr align = 'center'>";
