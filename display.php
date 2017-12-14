@@ -57,7 +57,7 @@ if($query != ""){
     
 // Final Display of All Entries
 $query = "SELECT * FROM Corvettes";
-$result = sqlsrv_query($conn, $query);
+$result = sqlsrv_query($conn, $query, array(), array( "Scrollable" => 'static' )); 
 
 // Get the number of rows in the result, as well as the first row
 //  and the number of fields in the rows
