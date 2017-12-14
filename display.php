@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title> Simple Online Social List </title>
+    <title> Database Programming with PHP </title>
     <style type = "text/css">
     td, th, table {border: thin solid black;}
     </style>
@@ -10,71 +10,65 @@
 <?php
     
 // Get input data
-    $name= $_POST["name"];
-    $phone = $_POST["phone"];
-    $address = $_POST["address"];
-    $facebook = $_POST["facebook"];
-    $twitter = $_POST["twitter"];
+    $id = $_POST["id"];
+    $type = $_POST["type"];
+    $miles = $_POST["miles"];
+    $year = $_POST["year"];
+    $state = $_POST["state"];
     $action = $_POST["action"];
-	
-	if ($name == '' && $action != display) {
-		print "Error - empty name";
-		exit;
-	}
+    $statement = $_POST["statement"];
+    
+    // If any of numerical values are blank, set them to zero
+    if ($id == "") $id = 0;
+    if ($miles == "") $miles = 0.0;
+    if ($year == "") $year = 0;
+    if ($state == "") $state = 0;
 
-// Connect to MySQL
-$db = mysql_connect("db1.cs.uakron.edu:3306", "smg134", "aeCh1xee");
-if (!$db) {
-     print "Error - Could not connect to MySQL";
-     exit;
-}
+// Connect to MSSQL
+$serverName = "extracreditserver.database.windows.net";
+$connectionOptions = array(
+    "Database" => "ISP Extra Credit",
+    "UID" => "smg134",
+    "PWD" => "D0gmeatG00dyear"
+);
+$conn = sqlsrv_connect($serverName, $connectionOptions);
 
-// Select the database
-$er = mysql_select_db("ISP_smg134");
-if (!$er) {
-    print "Error - Could not select the database";
-    exit;
-}
+// print "<b> The action is: </b> $action <br />";
 
 if($action == "display")
     $query = "";
 else if ($action == "insert")
-    $query = "insert into Contacts values('$name', '$phone', '$address', '$facebook', '$twitter')";
+    $query = "insert into Corvettes values($id, '$type', $miles, $year, $state)";
 else if ($action == "update")
-    $query = "update Contacts set Phone = '$phone', Address = '$address', Facebook = '$facebook', Twitter = '$twitter' where Name = '$name'";
+    $query = "update Corvettes set Body_style = '$type', Miles = $miles, Year = $year, State = $state where Vette_id = $id";
 else if ($action == "delete")
-    $query = "delete from Contacts where Name = '$name'";
+    $query = "delete from Corvettes where Vette_id = $id";
+else if ($action == "user")
+    $query = $statement;
+
 
 if($query != ""){
     trim($query);
+    $query_html = htmlspecialchars($query);
+    print "<b> The query is: </b> " . $query_html . "<br />";
     
-    $result = mysql_query($query);
-    if (!$result) {
-        print "Error - the query could not be executed";
-        $error = mysql_error();
-        print "<p>" . $error . "</p>";
-    }
+    $result = sqlsrv_query($conn, $query);
 }
     
 // Final Display of All Entries
-$query = "SELECT * FROM Contacts";
-$result = mysql_query($query);
-if (!$result) {
-    print "Error - the query could not be executed";
-    $error = mysql_error();
-    print "<p>" . $error . "</p>";
-    exit;
-}
+$query = "SELECT * FROM Corvettes";
+$result = sqlsrv_query($conn, $query);
 
 // Get the number of rows in the result, as well as the first row
 //  and the number of fields in the rows
-$num_rows = mysql_num_rows($result);
+$num_rows = sqlsrv_num_rows($result);
+//print "Number of rows = $num_rows <br />";
 
-print "<table><caption> <h2> Contacts ($num_rows) </h2> </caption>";
+print "<table><caption> <h2> Cars ($num_rows) </h2> </caption>";
 print "<tr align = 'center'>";
 
-$row = mysql_fetch_array($result);
-$num_fields = mysql_num_fields($result);
+$row = sqlsrv_fetch_array($result);
+$num_fields = sqlsrv_num_fields($result);
 
 // Produce the column labels
 $keys = array_keys($row);
@@ -91,7 +85,7 @@ for ($row_num = 0; $row_num < $num_rows; $row_num++) {
         print "<th>" . $value . "</th> ";
     }
     print "</tr>";
-    $row = mysql_fetch_array($result);
+    $row = sqlsrv_fetch_array($result);
 }
 print "</table>";
 ?>
