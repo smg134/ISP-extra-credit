@@ -62,17 +62,12 @@ $result = sqlsrv_query($conn, $query, array(), array( "Scrollable" => 'static' )
 // Get the number of rows in the result, as well as the first row
 //  and the number of fields in the rows
 $num_rows = sqlsrv_num_rows($result);
-if ($num_rows === false)
-   print "Error in retrieveing row count.";
 
 print "<table><caption> <h2> Cars ($num_rows) </h2> </caption>";
 print "<tr align = 'center'>";
 
 $row = sqlsrv_fetch_array($result);
 $num_fields = sqlsrv_num_fields($result);
-
-print "<b> Rows: </b> " . $num_rows . "<br />";
-print "<b> Fields: </b> " . $num_fields . "<br />";
 
 // Produce the column labels
 $keys = array_keys($row);
