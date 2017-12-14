@@ -70,7 +70,7 @@ print "<tr align = 'center'>";
 $row = sqlsrv_fetch_array($result);
 $num_fields = sqlsrv_num_fields($result);
 
-print $num_fields;
+print $num_rows;
 
 // Produce the column labels
 $keys = array_keys($row);
